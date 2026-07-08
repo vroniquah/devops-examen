@@ -3,11 +3,10 @@ FROM node:20-alpine as build
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
-RUN chmod +x mvnw
 COPY . .
-RUN npm run build
+RUN sed -i 's/\r$//' mvnw
+RUN chmod +x mvnw
+RUN ./mvnw clean package -DskipTests
 
 FROM nginx:alpine
 
