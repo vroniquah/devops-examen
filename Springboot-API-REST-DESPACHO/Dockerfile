@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY package*.json ./
 RUN npm install
-
+RUN chmod +x mvnw
 COPY . .
 RUN npm run build
 
