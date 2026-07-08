@@ -1,19 +1,10 @@
-FROM node:20-alpine as build
-
-
+FROM maven:3.8.5-openjdk-17 AS build
 WORKDIR /app
-
 COPY . .
-RUN sed -i 's/\r$//' mvnw
-RUN chmod +x mvnw
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
-FROM nginx:alpine
-
-
-COPY --from=build /app/dist /usr/share/nginx/html
-
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8081
+ENTRYPOINT ["java", "-jar", "app.jar"]
